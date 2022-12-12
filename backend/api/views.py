@@ -5,7 +5,6 @@ from http import HTTPStatus
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-
 from djoser.views import UserViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status, filters
@@ -13,7 +12,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 
-from users.models import User, Follow
+from .filters import IngredientFilter, RecipeFilter
+from .pagination import LimitPageNumberPagination
+from .permissions import AdminOrAuthor, AdminOrReadOnly
 from recipes.models import (
     Ingredient,
     Tag,
@@ -31,9 +32,8 @@ from .serializers import (
     TagSerializer,
     UserFollowSerializer,
 )
-from .filters import IngredientFilter, RecipeFilter
-from .pagination import LimitPageNumberPagination
-from .permissions import AdminOrAuthor, AdminOrReadOnly
+from users.models import User, Follow
+
 
 SHOPPING_LIST_NAME = 'shopping_list.txt'
 

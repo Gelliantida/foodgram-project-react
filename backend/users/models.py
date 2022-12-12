@@ -1,8 +1,17 @@
 """Создание модели пользователя."""
 
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
+
+
+USERNAME_VALIDATION = 'Недопустимое значение поля "username"'
+EMAIL_LENGTH = 254
+FIRST_NAME_LENGTH = 50
+LAST_NAME_LENGTH = 50
+USERNAME_LENGTH = 100
+FOLLOW_TO_YOURSELF = 'Невозможно подписаться на себя'
 
 
 class User(AbstractUser):
@@ -10,28 +19,29 @@ class User(AbstractUser):
 
     username = models.CharField(
         verbose_name='Имя пользователя',
-        db_index=True,
         unique=True,
-        max_length=100,
-        validators=[
-            RegexValidator(
-                regex=r'^[-a-zA-Z0-9_]+$',
-                message='Недопустимые символы!'
-            )
-        ]
+        max_length=USERNAME_LENGTH,
+        validators=(RegexValidator(
+            regex=r'^[\w.@+-]+\Z',
+            message=USERNAME_VALIDATION),
+        )
     )
     first_name = models.CharField(
         verbose_name='Имя пользователя',
-        max_length=50,
+        max_length=FIRST_NAME_LENGTH,
+        blank=True,
+        null=True,
     )
     last_name = models.CharField(
         verbose_name='Фамилия пользователя',
-        max_length=50,
+        max_length=LAST_NAME_LENGTH,
+        blank=True,
+        null=True,
     )
     email = models.EmailField(
         verbose_name='Электронная почта',
         unique=True,
-        max_length=254
+        max_length=EMAIL_LENGTH
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -44,7 +54,7 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return f'{self.username}'
+        return self.username
 
 
 class Follow(models.Model):
@@ -63,9 +73,14 @@ class Follow(models.Model):
         related_name='following'
     )
 
-    class Meta:
-        """Единственное и множественные имена модели."""
+    def clean(self):
+        if self.user == self.author:
+            raise ValidationError(FOLLOW_TO_YOURSELF)
 
+    class Meta:
+        """Дополнительные значения модели."""
+
+        ordering = ['author', ]
         verbose_name = 'Подписчик'
         verbose_name_plural = 'Подписчики'
 

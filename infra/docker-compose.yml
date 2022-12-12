@@ -6,10 +6,10 @@ services:
     volumes:
       - db:/var/lib/postgresql/data/
     env_file:
-      - .env
+      - ./.env
 
   backend:
-    image: gelliantida/foodgram:latest
+    image: gelliantida/foodgram_backend:v3.1
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,7 +20,7 @@ services:
       - ./.env
 
   frontend:
-    image: gelliantida/foodgram:latest
+    image: gelliantida/foodgram_frontend:v3.1
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:

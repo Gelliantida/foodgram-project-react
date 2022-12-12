@@ -24,11 +24,11 @@ class RecipeFilter(django_filters.FilterSet):
 
     tags = django_filters.AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = django_filters.BooleanFilter(
-        # field_name='is_favorited',
+        field_name='is_favorited',
         method='favorite_filter'
     )
     is_in_shopping_basket = django_filters.BooleanFilter(
-        # field_name='is_in_shopping_basket',
+        field_name='is_in_shopping_basket',
         method='shopping_cart_filter'
     )
 
@@ -46,4 +46,4 @@ class RecipeFilter(django_filters.FilterSet):
         """Дополнительные параметры фильтра."""
 
         model = Recipe
-        fields = ('is_favorited', 'is_in_shopping_basket', 'author', 'tags')
+        fields = ['author']

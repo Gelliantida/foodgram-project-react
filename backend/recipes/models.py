@@ -1,7 +1,20 @@
 """Создание моделей."""
 
+from django.core.validators import MinValueValidator
 from django.db import models
+
 from users.models import User
+
+
+INGREDIENT_NAME_LENGTH = 200
+MEASUREMENT_UNIT_LENGTH = 25
+TAG_NAME_LENGTH = 50
+TAG_COLOR_LENGTH = 10
+TAG_SLUG_LENGTH = 50
+RECIPE_NAME_LENGTH = 200
+COCKING_TIME_MESSAGE = 'Время приготовления не может быть менее 1 минуты'
+NUMBER_OF_INGREDIENTS = ('Минимальное колличество ингредиентов не может быть'
+                         ' меньше 1')
 
 
 class Ingredient(models.Model):
@@ -9,22 +22,24 @@ class Ingredient(models.Model):
 
     name = models.CharField(
         verbose_name='Название ингредиента',
-        max_length=200,
+        max_length=INGREDIENT_NAME_LENGTH,
+        blank=False,
     )
     measurement_unit = models.CharField(
         verbose_name='Единица измерения',
-        max_length=25,
+        max_length=MEASUREMENT_UNIT_LENGTH,
+        blank=False,
     )
 
     class Meta:
         """Дополнительные параметры модели."""
 
-        ordering = ('name',)
+        ordering = ['id', ]
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
-        return f'{self.name}'
+        return self.name
 
 
 class Tag(models.Model):
@@ -32,28 +47,29 @@ class Tag(models.Model):
 
     name = models.CharField(
         verbose_name='Название',
-        max_length=50
+        max_length=TAG_NAME_LENGTH,
+        unique=True,
     )
     color = models.CharField(
         verbose_name='Цвет',
         unique=True,
-        max_length=20
+        max_length=TAG_COLOR_LENGTH,
     )
     slug = models.SlugField(
         verbose_name='Слаг',
         unique=True,
-        max_length=50
+        max_length=TAG_SLUG_LENGTH
     )
 
     class Meta:
         """Дополнительные параметры модели."""
 
-        ordering = ('id',)
+        ordering = ['id', ]
         verbose_name = 'Тэг'
         verbose_name_plural = 'Тэги'
 
     def __str__(self):
-        return f'{self.name}'
+        return self.name[:20]
 
 
 class Recipe(models.Model):
@@ -67,13 +83,14 @@ class Recipe(models.Model):
         null=True
     )
     name = models.CharField(
-        verbose_name='Название',
-        max_length=200
+        verbose_name='Название рецепта',
+        max_length=RECIPE_NAME_LENGTH
     )
     ingredients = models.ManyToManyField(
         Ingredient,
         verbose_name='Ингредиенты',
-        related_name='recipes'
+        related_name='recipes',
+        through='NumberOfIngredients',
     )
     tags = models.ManyToManyField(
         Tag,
@@ -85,15 +102,20 @@ class Recipe(models.Model):
         auto_now_add=True
     )
     cooking_time = models.PositiveIntegerField(
-        verbose_name='Время приготовления (минуты)'
+        verbose_name='Время приготовления (минуты)',
+        validators=[
+            MinValueValidator(
+                1, message=COCKING_TIME_MESSAGE
+            ),
+        ],
+        null=True
     )
     image = models.ImageField(
         verbose_name='Картинка',
-        upload_to='media'
+        upload_to='recipe/',
     )
     text = models.TextField(
         verbose_name='Описание',
-        max_length=500
     )
 
     class Meta:
@@ -104,7 +126,7 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
 
     def __str__(self):
-        return f'{self.name}'
+        return self.name[:20]
 
 
 class NumberOfIngredients(models.Model):
@@ -123,7 +145,12 @@ class NumberOfIngredients(models.Model):
         related_name='number_ingredients'
     )
     number = models.PositiveIntegerField(
-        verbose_name='Число ингредиентов'
+        verbose_name='Число ингредиентов',
+        validators=[
+            MinValueValidator(
+                1, message=NUMBER_OF_INGREDIENTS
+            ),
+        ]
     )
 
     class Meta:
@@ -197,11 +224,9 @@ class ShoppingBasket(models.Model):
         verbose_name_plural = 'Покупки'
         constraints = [
             models.UniqueConstraint(
-                fields=[
-                    'user',
-                    'recipe',
-                ],
-                name='unique_shopping_basket')
+                fields=['user', 'recipe',],
+                name='unique_shopping_basket'
+            ),
         ]
 
     def __str__(self):
