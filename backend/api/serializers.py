@@ -115,7 +115,6 @@ class AddIngredientRecipeSerializer(serializers.ModelSerializer):
 
     def validate_amount(self, value):
         if value < 1:
-            print(value)
             raise serializers.ValidationError(NUMBER_OF_INGREDIENTS)
         return value
 
@@ -164,7 +163,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer, RecipeValidator):
-    """Сериализатор для создания рецептов."""
+    """
+    Сериализатор для создания рецептов.
+    Методы валидации описаны в классе RecipeValidator.
+    """
 
     ingredients = AddIngredientRecipeSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(

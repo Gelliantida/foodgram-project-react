@@ -7,11 +7,11 @@ from rest_framework import serializers
 
 class RecipeValidator:
     def validate_cooking_time(self, cooking_time):
-            if cooking_time < 1:
-                raise serializers.ValidationError(
-                    'Время приготовления не может быть меньше 1 мин.'
-                )
-            return cooking_time
+        if cooking_time < 1:
+            raise serializers.ValidationError(
+                'Время приготовления не может быть меньше 1 мин.'
+            )
+        return cooking_time
 
     def validate_ingredients(self, data):
         ingredients = data.get('ingredients')

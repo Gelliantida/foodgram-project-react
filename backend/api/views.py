@@ -157,6 +157,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.__add_recipe(Favorite, request, pk)
         return self.__delete_recipe(Favorite, request, pk)
 
+
+
+
+
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
@@ -183,4 +187,27 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
-        return DownloadBasketList(request.user)
+        user = request.user
+        if not user.shopping_basket.exists():
+            return Response(status=HTTPStatus.BAD_REQUEST)
+        ingredients = NumberOfIngredients.objects.filter(
+            recipe__shopping_basket__user=user
+        ).values(
+            'ingredients__name',
+            'ingredients__measurement_unit',
+        ).annotate(
+            value=Sum('number')
+        ).order_by('ingredients__name')
+        response = HttpResponse(
+            content_type='text/plain',
+            charset='utf-8',
+        )
+        response['Content-Disposition'] = f'attachment; filename={SHOPPING_LIST_NAME}'
+        response.write('Список продуктов к покупке:\n')
+        for ingredient in ingredients:
+            response.write(
+                f'- {ingredient["ingredients__name"]} '
+                f'- {ingredient["value"]} '
+                f'{ingredient["ingredients__measurement_unit"]}\n'
+            )
+        return response
