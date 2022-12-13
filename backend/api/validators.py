@@ -1,8 +1,9 @@
 '''Валидаторы для сериализатора рецептов'''
 
 from django.shortcuts import get_object_or_404
-from recipes.models import Ingredient
 from rest_framework import serializers
+
+from recipes.models import Ingredient
 
 
 class RecipeValidator:
@@ -12,12 +13,6 @@ class RecipeValidator:
                 'Время приготовления не может быть меньше 1 мин.'
             )
         return cooking_time
-
-    def validate_ingredients(self, data):
-        ingredients = data.get('ingredients')
-        self.check_ingredients(ingredients)
-        data['ingredients'] = ingredients
-        return data
 
     def validate_ingredients_exist(self, data):
         validated_items = []
@@ -31,3 +26,10 @@ class RecipeValidator:
             raise serializers.ValidationError(
                 'Этот ингредиент уже добавлен'
             )
+
+    def validate_ingredients(self, data):
+        ingredients = data.get('ingredients')
+        self.validate_ingredients_exist(ingredients)
+        data['ingredients'] = ingredients
+        return data
+
