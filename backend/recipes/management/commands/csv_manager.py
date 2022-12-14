@@ -2,7 +2,7 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-from .models import Ingredient, Tag
+from recipes.models import Ingredient, Tag
 
 file_table = {
     'ingredients.csv': Ingredient,
