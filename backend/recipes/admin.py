@@ -12,6 +12,7 @@ from .models import (
 
 EMPTY_VALUE = '-пусто-'
 
+
 class RecipeIngredientsAdmin(admin.ModelAdmin):
     model = NumberOfIngredients,
     autocomplete_fields = ('ingredients',)

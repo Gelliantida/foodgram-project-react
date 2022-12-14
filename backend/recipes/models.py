@@ -223,7 +223,7 @@ class ShoppingBasket(models.Model):
         verbose_name_plural = 'Покупки'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'recipe',],
+                fields=['user', 'recipe', ],
                 name='unique_shopping_basket'
             ),
         ]

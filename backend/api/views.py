@@ -37,6 +37,7 @@ from users.models import User, Follow
 
 SHOPPING_LIST_NAME = 'shopping_list.txt'
 
+
 class UsersViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserFollowSerializer
@@ -92,33 +93,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
     filterset_class = IngredientFilter
 
 
-class DownloadBasketList(viewsets.ModelViewSet):
-    def get_shopping_ingredients(user):
-        ingredients = NumberOfIngredients.objects.filter(
-            recipe__shopping_cart__user=user
-        ).values(
-            'ingredients__name',
-            'ingredients__measurement_unit',
-        ).annotate(
-            value=Sum('number')
-        ).order_by('ingredients__name')
-        response = HttpResponse(
-            content_type='text/plain',
-            charset='utf-8',
-        )
-        response['Content-Disposition'] = (
-            f'attachment; filename={SHOPPING_LIST_NAME}'
-        )
-        response.write('Список ингредиентов к покупке:\n')
-        for ingredient in ingredients:
-            response.write(
-                f'- {ingredient["ingredients__name"]} '
-                f'- {ingredient["value"]} '
-                f'{ingredient["ingredients__measurement_unit"]}\n'
-            )
-        return response
-
-
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (AdminOrAuthor,)
@@ -156,10 +130,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             return self.__add_recipe(Favorite, request, pk)
         return self.__delete_recipe(Favorite, request, pk)
-
-
-
-
 
     @action(
         detail=True,
@@ -202,7 +172,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             content_type='text/plain',
             charset='utf-8',
         )
-        response['Content-Disposition'] = f'attachment; filename={SHOPPING_LIST_NAME}'
+        response['Content-Disposition'] = (
+            f'attachment; filename={SHOPPING_LIST_NAME}'
+        )
         response.write('Список продуктов к покупке:\n')
         for ingredient in ingredients:
             response.write(
