@@ -116,7 +116,7 @@ class AddIngredientRecipeSerializer(serializers.ModelSerializer):
         if value < 1:
             raise serializers.ValidationError(NUMBER_OF_INGREDIENTS)
         return value
-5325712
+
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     """Сериализатор для обработки рецептов."""

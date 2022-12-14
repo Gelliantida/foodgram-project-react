@@ -14,7 +14,8 @@ class RecipeValidator:
             )
         return cooking_time
 
-    def validate_ingredients_exist(self, data):
+    def validate_ingredients(self, data):
+        ingredients = data.get('ingredients')
         validated_items = []
         existed = []
         for item in data:
@@ -26,10 +27,5 @@ class RecipeValidator:
             raise serializers.ValidationError(
                 'Этот ингредиент уже добавлен'
             )
-
-    def validate_ingredients(self, data):
-        ingredients = data.get('ingredients')
-        self.validate_ingredients_exist(ingredients)
         data['ingredients'] = ingredients
         return data
-
