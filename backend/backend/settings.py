@@ -10,11 +10,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.User'
+
+INTERNAL_IPS = [
+    '51.250.88.176',
+]
 
 
 INSTALLED_APPS = [
@@ -31,6 +35,7 @@ INSTALLED_APPS = [
     'recipes',
     'api',
     'users',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -41,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
