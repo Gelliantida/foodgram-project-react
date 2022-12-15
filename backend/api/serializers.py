@@ -162,7 +162,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         ).exists() if user.is_authenticated else False
 
 
-class RecipeWriteSerializer(serializers.ModelSerializer, RecipeValidator):
+class RecipeWriteSerializer(serializers.ModelSerializer):
     """
     Сериализатор для создания рецептов.
     Методы валидации описаны в классе RecipeValidator.
@@ -187,6 +187,29 @@ class RecipeWriteSerializer(serializers.ModelSerializer, RecipeValidator):
             'text',
             'cooking_time'
         )
+
+    def validate_cooking_time(self, cooking_time):
+        if cooking_time < 1:
+            raise serializers.ValidationError(
+                'Время приготовления не может быть меньше 1 мин.'
+            )
+        return cooking_time
+
+    def validate_ingredients(self, data):
+        ingredients = data.get('ingredients')
+        validated_items = []
+        existed = []
+        for item in data:
+            ingredient = get_object_or_404(Ingredient, pk=item['id'])
+            if ingredient in validated_items:
+                existed.append(ingredient)
+            validated_items.append(ingredient)
+        if existed:
+            raise serializers.ValidationError(
+                'Этот ингредиент уже добавлен'
+            )
+        data['ingredients'] = ingredients
+        return data
 
     @staticmethod
     def add_ingredients(ingredients, recipe):
