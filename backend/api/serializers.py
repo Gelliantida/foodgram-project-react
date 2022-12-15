@@ -17,8 +17,6 @@ from recipes.models import (
 )
 from users.models import Follow, User
 
-from .validators import RecipeValidator
-
 
 class CreateUserSerializer(UserCreateSerializer):
     """Сериализатор для регистрации пользователей."""
