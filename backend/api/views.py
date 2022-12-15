@@ -166,7 +166,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'ingredients__name',
             'ingredients__measurement_unit',
         ).annotate(
-            value=Sum('number')
+            value=Sum('amount')
         ).order_by('ingredients__name')
         response = HttpResponse(
             content_type='text/plain',

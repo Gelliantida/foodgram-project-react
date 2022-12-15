@@ -16,10 +16,6 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.User'
 
-INTERNAL_IPS = [
-    '51.250.88.176',
-]
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -35,7 +31,6 @@ INSTALLED_APPS = [
     'recipes',
     'api',
     'users',
-    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -46,7 +41,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'

@@ -136,15 +136,15 @@ class NumberOfIngredients(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
-        related_name='number_ingredients'
+        related_name='amount_ingredients'
     )
     ingredients = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиент',
-        related_name='number_ingredients'
+        related_name='amount_ingredients'
     )
-    number = models.PositiveIntegerField(
+    amount = models.PositiveIntegerField(
         verbose_name='Число ингредиентов',
         validators=[
             MinValueValidator(
@@ -166,7 +166,7 @@ class NumberOfIngredients(models.Model):
         ]
 
     def __str__(self):
-        return f'В {self.recipe} {self.number} {self.ingredients}'
+        return f'В {self.recipe} {self.amount} {self.ingredients}'
 
 
 class Favorite(models.Model):

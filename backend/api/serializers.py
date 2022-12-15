@@ -17,8 +17,6 @@ from recipes.models import (
 )
 from users.models import Follow, User
 
-from .validators import RecipeValidator
-
 
 class CreateUserSerializer(UserCreateSerializer):
     """Сериализатор для регистрации пользователей."""
@@ -97,7 +95,7 @@ class IngredientReadSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'measurement_unit',
-            'number',
+            'amount',
         )
         validators = [UniqueTogetherValidator(
             queryset=NumberOfIngredients.objects.all(),
@@ -106,12 +104,12 @@ class IngredientReadSerializer(serializers.ModelSerializer):
 
 class AddIngredientRecipeSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления ингредиентов в рецепт."""
-    id = serializers.IntegerField()
-    amount = serializers.IntegerField()
+    id = serializers.IntegerField(write_only=True)
+    amount = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = NumberOfIngredients
-        fields = ('id', 'number')
+        fields = ('id', 'amount')
 
     def validate_amount(self, value):
         if value < 1:
@@ -128,7 +126,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     image = Base64ImageField(use_url=True, )
     ingredients = IngredientReadSerializer(
         many=True,
-        source='number_ingredients',
+        source='amount_ingredients',
         read_only=True
     )
 
@@ -162,7 +160,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         ).exists() if user.is_authenticated else False
 
 
-class RecipeWriteSerializer(serializers.ModelSerializer, RecipeValidator):
+class RecipeWriteSerializer(serializers.ModelSerializer):
     """
     Сериализатор для создания рецептов.
     Методы валидации описаны в классе RecipeValidator.
@@ -187,6 +185,32 @@ class RecipeWriteSerializer(serializers.ModelSerializer, RecipeValidator):
             'text',
             'cooking_time'
         )
+
+    def validate_cooking_time(self, cooking_time):
+        if cooking_time < 1:
+            raise serializers.ValidationError(
+                'Время приготовления не может быть меньше 1 мин.'
+            )
+        return cooking_time
+
+    def check_ingredients(self, data):
+        validated_items = []
+        existed = []
+        for item in data:
+            ingredient = get_object_or_404(Ingredient, pk=item['id'])
+            if ingredient in validated_items:
+                existed.append(ingredient)
+            validated_items.append(ingredient)
+        if existed:
+            raise serializers.ValidationError(
+                'Этот ингредиент уже добавлен'
+            )
+
+    def validate(self, data):
+        ingredients = data.get('ingredients')
+        self.check_ingredients(ingredients)
+        data['ingredients'] = ingredients
+        return data
 
     @staticmethod
     def add_ingredients(ingredients, recipe):
