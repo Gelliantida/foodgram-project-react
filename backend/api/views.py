@@ -106,7 +106,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeWriteSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(author=self.request.user.id)
 
     @staticmethod
     def __add_recipe(model, request, pk):
