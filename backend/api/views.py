@@ -156,9 +156,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=['GET'],
         permission_classes=(IsAuthenticated,)
     )
-    def shopping_cart(self, request):
+    def download_shopping_cart(self, request):
         user = request.user
-        if not user.shopping_basket.exists():
+        if not user.shopping_cart.exists():
             return Response(status=HTTPStatus.BAD_REQUEST)
         ingredients = NumberOfIngredients.objects.filter(
             recipe__shopping_basket__user=user
