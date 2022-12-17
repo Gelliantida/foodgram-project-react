@@ -12,7 +12,7 @@ from recipes.models import (
     Favorite,
     NumberOfIngredients,
     Recipe,
-    ShoppingBasket,
+    ShoppingCart,
     Tag
 )
 from users.models import Follow, User
@@ -155,7 +155,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
-        return ShoppingBasket.objects.filter(
+        return ShoppingCart.objects.filter(
             user=user, recipe=obj
         ).exists() if user.is_authenticated else False
 

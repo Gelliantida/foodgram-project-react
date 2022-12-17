@@ -201,20 +201,20 @@ class Favorite(models.Model):
         return f'{self.recipe} добавлен в избранные {self.user}'
 
 
-class ShoppingBasket(models.Model):
+class ShoppingCart(models.Model):
     """Модель корзины покупок."""
 
     user = models.ForeignKey(
         User,
         verbose_name='Пользователь',
         on_delete=models.CASCADE,
-        related_name='shopping_basket',
+        related_name='shopping_cart',
     )
     recipe = models.ForeignKey(
         Recipe,
         verbose_name='Рецепт',
         on_delete=models.CASCADE,
-        related_name='shopping_basket',
+        related_name='shopping_cart',
     )
 
     class Meta:
@@ -225,7 +225,7 @@ class ShoppingBasket(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe', ],
-                name='unique_shopping_basket'
+                name='unique_shopping_cart'
             ),
         ]
 

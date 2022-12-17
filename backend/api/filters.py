@@ -29,7 +29,7 @@ class RecipeFilter(django_filters.FilterSet):
         method='favorite_filter'
     )
     is_in_shopping_basket = django_filters.BooleanFilter(
-        field_name='is_in_shopping_basket',
+        field_name='is_in_shopping_cart',
         method='shopping_cart_filter'
     )
 
@@ -38,7 +38,7 @@ class RecipeFilter(django_filters.FilterSet):
 
         return Recipe.objects.filter(favorite__user=self.request.user)
 
-    def shopping_basket_filter(self, queryset, name, value):
+    def shopping_cart_filter(self, queryset, name, value):
         """Функция обработки пременной get_is_in_shopping_basket."""
 
         return Recipe.objects.filter(shopping_cart__user=self.request.user)
