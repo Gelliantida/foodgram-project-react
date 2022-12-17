@@ -1,14 +1,14 @@
 """Создание фильтров."""
 
-import django_filters
+from django_filters import rest_framework as filters
 
 from recipes.models import Ingredient, Recipe
 
 
-class IngredientFilter(django_filters.FilterSet):
+class IngredientFilter(filters.FilterSet):
     """Фильтр для ингридиентов."""
 
-    name = django_filters.CharFilter(
+    name = filters.CharFilter(
         field_name='name',
         lookup_expr='istartswith',
     )
@@ -20,15 +20,15 @@ class IngredientFilter(django_filters.FilterSet):
         fields = ('name',)
 
 
-class RecipeFilter(django_filters.FilterSet):
+class RecipeFilter(filters.FilterSet):
     """Фильтр для рецептов."""
 
-    tags = django_filters.AllValuesMultipleFilter(field_name='tags__slug')
-    is_favorited = django_filters.BooleanFilter(
+    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
+    is_favorited = filters.BooleanFilter(
         field_name='is_favorited',
         method='favorite_filter'
     )
-    is_in_shopping_basket = django_filters.BooleanFilter(
+    is_in_shopping_basket = filters.BooleanFilter(
         field_name='is_in_shopping_cart',
         method='shopping_cart_filter'
     )
@@ -41,7 +41,7 @@ class RecipeFilter(django_filters.FilterSet):
     def shopping_cart_filter(self, queryset, name, value):
         """Функция обработки пременной get_is_in_shopping_basket."""
 
-        return Recipe.objects.rest_framework(shopping_cart__user=self.request.user)
+        return Recipe.objects.filter(shopping_cart__user=self.request.user)
 
     class Meta:
         """Дополнительные параметры фильтра."""
