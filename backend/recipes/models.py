@@ -13,8 +13,6 @@ TAG_COLOR_LENGTH = 10
 TAG_SLUG_LENGTH = 50
 RECIPE_NAME_LENGTH = 200
 COCKING_TIME_MESSAGE = 'Время приготовления не может быть менее 1 минуты'
-NUMBER_OF_INGREDIENTS = ('Минимальное колличество ингредиентов не может быть'
-                         ' меньше 1')
 
 
 class Ingredient(models.Model):
@@ -146,12 +144,6 @@ class NumberOfIngredients(models.Model):
     )
     amount = models.PositiveIntegerField(
         verbose_name='Число ингредиентов',
-        validators=[
-            MinValueValidator(
-                1, message=NUMBER_OF_INGREDIENTS
-            ),
-        ]
-    )
 
     class Meta:
         """Дополнительные параметры модели."""
