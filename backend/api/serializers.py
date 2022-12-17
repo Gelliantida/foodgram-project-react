@@ -7,7 +7,6 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (
-    NUMBER_OF_INGREDIENTS,
     Ingredient,
     Favorite,
     NumberOfIngredients,
@@ -16,6 +15,10 @@ from recipes.models import (
     Tag
 )
 from users.models import Follow, User
+
+
+NUMBER_OF_INGREDIENTS = ('Минимальное колличество ингредиентов не может быть'
+                         ' меньше 1')
 
 
 class CreateUserSerializer(UserCreateSerializer):
