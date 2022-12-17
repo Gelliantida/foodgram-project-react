@@ -41,7 +41,7 @@ class RecipeFilter(django_filters.FilterSet):
     def shopping_cart_filter(self, queryset, name, value):
         """Функция обработки пременной get_is_in_shopping_basket."""
 
-        return Recipe.objects.filter(shopping_cart__user=self.request.user)
+        return Recipe.objects.rest_framework(shopping_cart__user=self.request.user)
 
     class Meta:
         """Дополнительные параметры фильтра."""
