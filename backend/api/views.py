@@ -20,7 +20,7 @@ from recipes.models import (
     Tag,
     Recipe,
     Favorite,
-    ShoppingCart,
+    ShoppingBasket,
     NumberOfIngredients
 )
 from .serializers import (
@@ -146,22 +146,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
         methods=['POST', 'DELETE'],
         permission_classes=(IsAuthenticated,)
     )
-    def shopping_cart(self, request, pk):
+    def shopping_basket(self, request, pk):
         if request.method == 'POST':
-            return self.__add_recipe(ShoppingCart, request, pk)
-        return self.__delete_recipe(ShoppingCart, request, pk)
+            return self.__add_recipe(ShoppingBasket, request, pk)
+        return self.__delete_recipe(ShoppingBasket, request, pk)
 
     @action(
         detail=False,
         methods=['GET'],
         permission_classes=(IsAuthenticated,)
     )
-    def download_shopping_cart(self, request):
+    def download_shopping_basket(self, request):
         user = request.user
-        if not user.shopping_cart.exists():
+        if not user.shopping_basket.exists():
             return Response(status=HTTPStatus.BAD_REQUEST)
         ingredients = NumberOfIngredients.objects.filter(
-            recipe__shopping_cart__user=user
+            recipe__shopping_basket__user=user
         ).values(
             'ingredients__name',
             'ingredients__measurement_unit',

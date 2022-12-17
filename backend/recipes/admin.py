@@ -5,7 +5,7 @@ from .models import (
     Ingredient,
     NumberOfIngredients,
     Recipe,
-    ShoppingCart,
+    ShoppingBasket,
     Tag
 )
 
@@ -71,7 +71,7 @@ class TagAdmin(admin.ModelAdmin):
     empty_value_display = EMPTY_VALUE
 
 
-@admin.register(ShoppingCart)
-class ShoppingCartAdmin(admin.ModelAdmin):
+@admin.register(ShoppingBasket)
+class ShoppingBasketAdmin(admin.ModelAdmin):
     list_display = ('id', 'user')
     empty_value_display = EMPTY_VALUE
