@@ -28,9 +28,9 @@ class RecipeFilter(filters.FilterSet):
         field_name='is_favorited',
         method='favorite_filter'
     )
-    is_in_shopping_basket = filters.BooleanFilter(
-        field_name='is_in_shopping_basket',
-        method='shopping_basket_filter'
+    is_in_shopping_cart = filters.BooleanFilter(
+        field_name='is_in_shopping_cart',
+        method='shopping_cart_filter'
     )
 
     def favorite_filter(self, queryset, name, value):
@@ -38,10 +38,10 @@ class RecipeFilter(filters.FilterSet):
 
         return Recipe.objects.filter(favorite__user=self.request.user)
 
-    def shopping_basket_filter(self, queryset, name, value):
-        """Функция обработки пременной get_is_in_shopping_basket."""
+    def shopping_cart_filter(self, queryset, name, value):
+        """Функция обработки пременной get_is_in_shopping_cart."""
 
-        return Recipe.objects.filter(shopping_basket__user=self.request.user)
+        return Recipe.objects.filter(shopping_cart__user=self.request.user)
 
     class Meta:
         """Дополнительные параметры фильтра."""

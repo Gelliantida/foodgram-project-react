@@ -20,7 +20,7 @@ from recipes.models import (
     Tag,
     Recipe,
     Favorite,
-    ShoppingBasket,
+    ShoppingCart,
     NumberOfIngredients
 )
 from .serializers import (
@@ -148,8 +148,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
-            return self.__add_recipe(ShoppingBasket, request, pk)
-        return self.__delete_recipe(ShoppingBasket, request, pk)
+            return self.__add_recipe(ShoppingCart, request, pk)
+        return self.__delete_recipe(ShoppingCart, request, pk)
 
     @action(
         detail=False,
