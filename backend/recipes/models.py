@@ -144,6 +144,7 @@ class NumberOfIngredients(models.Model):
     )
     amount = models.PositiveIntegerField(
         verbose_name='Число ингредиентов',
+    )
 
     class Meta:
         """Дополнительные параметры модели."""
