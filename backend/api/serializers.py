@@ -300,10 +300,8 @@ class FollowSerializer(serializers.ModelSerializer):
             recipes = recipes[:int(recipes_limit)]
         return RecipeFollowSerializer(recipes, many=True).data
 
-    @staticmethod
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj.author).count()
 
-    @staticmethod
     def get_is_subscribed(self, obj):
         return Follow.objects.filter(user=obj.user, author=obj.author).exists()
