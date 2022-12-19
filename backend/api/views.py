@@ -47,7 +47,7 @@ class UsersViewSet(UserViewSet):
     @action(
         methods=['GET'],
         detail=False,
-        permission_classes=(IsAuthenticated,)
+        permission_classes=(IsAuthenticated, )
     )
     def subscriptions(self, request):
         queryset = Follow.objects.filter(user=request.user)
@@ -61,20 +61,22 @@ class UsersViewSet(UserViewSet):
         methods=['POST', 'DELETE'],
         detail=True,
     )
-    def subscribe(self, request, id):
-        author = get_object_or_404(User, id=id)
-        if request.method == 'POST':
-            serializer = FollowSerializer(
-                Follow.objects.create(
-                    user=request.user,
-                    author=author
-                ), context={'request': request},
-            )
-            return Response(
-                serializer.data, status=status.HTTP_201_CREATED
-            )
-        Follow.objects.filter(user=request.user, author=author).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def create(self, request, *args, **kwargs):
+        """Create subscriptions."""
+        user_id = self.kwargs.get('users_id')
+        user = get_object_or_404(User, id=user_id)
+        Follow.objects.create(
+            user=request.user, following=user)
+        return Response(HTTPStatus.CREATED)
+
+    def delete(self, request, *args, **kwargs):
+        """Delete subscriptions."""
+        author_id = self.kwargs['users_id']
+        user_id = request.user.id
+        subscribe = get_object_or_404(
+            Follow, user__id=user_id, following__id=author_id)
+        subscribe.delete()
+        return Response(HTTPStatus.NO_CONTENT)
 
 
 class TagViewSet(viewsets.ModelViewSet):
