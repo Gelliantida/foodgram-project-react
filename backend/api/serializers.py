@@ -8,7 +8,6 @@ from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (
     Ingredient,
-    #Favorite,
     NumberOfIngredients,
     Recipe,
     ShoppingCart,
