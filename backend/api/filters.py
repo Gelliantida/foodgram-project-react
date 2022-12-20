@@ -35,6 +35,7 @@ class RecipeFilter(filters.FilterSet):
     )
     author = filters.ModelChoiceFilter(
         queryset=User.objects.all()
+    )
 
     def favorite_filter(self, queryset, name, value):
         """Функция обработки пременной get_is_favorited."""
