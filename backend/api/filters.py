@@ -51,4 +51,4 @@ class RecipeFilter(filters.FilterSet):
         """Дополнительные параметры фильтра."""
 
         model = Recipe
-        fields = ('tags','author')
+        fields = ('tags', 'author')
