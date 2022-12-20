@@ -33,9 +33,7 @@ class RecipeFilter(filters.FilterSet):
         field_name='is_in_shopping_cart',
         method='shopping_cart_filter'
     )
-    author = filters.ModelChoiceFilter(
-        queryset=User.objects.all()
-    )
+    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
 
     def favorite_filter(self, queryset, name, value):
         """Функция обработки пременной get_is_favorited."""
