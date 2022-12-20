@@ -8,6 +8,7 @@ from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (
     Ingredient,
+    Favorite,
     NumberOfIngredients,
     Recipe,
     ShoppingCart,
@@ -151,7 +152,9 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request.user.is_anonymous:
             return False
-        return request.user.Favorite.filter(recipe=obj).exists()
+        return Favorite.objects.filter(
+            user=request.user, obj__id=obj.id
+        ).exists()
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
