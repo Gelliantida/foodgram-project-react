@@ -3,6 +3,7 @@
 from django_filters import rest_framework as filters
 
 from recipes.models import Ingredient, Recipe
+from users.models import User
 
 
 class IngredientFilter(filters.FilterSet):
@@ -32,6 +33,8 @@ class RecipeFilter(filters.FilterSet):
         field_name='is_in_shopping_cart',
         method='shopping_cart_filter'
     )
+    author = filters.ModelChoiceFilter(
+        queryset=User.objects.all()
 
     def favorite_filter(self, queryset, name, value):
         """Функция обработки пременной get_is_favorited."""
