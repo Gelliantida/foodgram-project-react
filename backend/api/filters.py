@@ -2,7 +2,7 @@
 
 from django_filters import rest_framework as filters
 
-from recipes.models import Ingredient, Recipe, Tag
+from recipes.models import Ingredient, Recipe
 
 
 class IngredientFilter(filters.FilterSet):
@@ -23,13 +23,9 @@ class IngredientFilter(filters.FilterSet):
 class RecipeFilter(filters.FilterSet):
     """Фильтр для рецептов."""
 
-    tags = filters.ModelMultipleChoiceFilter(
-        field_name='tags__slug',
-        queryset=Tag.objects.all(),
-        to_field_name='slug'
-    )
-    author = filters.NumberFilter(field_name='author__id')
+    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = filters.BooleanFilter(
+        field_name='is_favorited',
         method='favorite_filter'
     )
     is_in_shopping_cart = filters.BooleanFilter(
@@ -51,4 +47,4 @@ class RecipeFilter(filters.FilterSet):
         """Дополнительные параметры фильтра."""
 
         model = Recipe
-        fields = ('tags', 'author')
+        fields = ['author']
