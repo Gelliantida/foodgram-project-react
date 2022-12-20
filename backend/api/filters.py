@@ -24,13 +24,12 @@ class RecipeFilter(filters.FilterSet):
     """Фильтр для рецептов."""
 
     tags = filters.ModelMultipleChoiceFilter(
-        field_name="tags__slug",
+        field_name='tags__slug',
         queryset=Tag.objects.all(),
-        label="Tags",
-        to_field_name="slug",
+        to_field_name='slug'
     )
+    author = filters.NumberFilter(field_name='author__id')
     is_favorited = filters.BooleanFilter(
-        field_name='is_favorited',
         method='favorite_filter'
     )
     is_in_shopping_cart = filters.BooleanFilter(
@@ -41,10 +40,7 @@ class RecipeFilter(filters.FilterSet):
     def favorite_filter(self, queryset, name, value):
         """Функция обработки пременной get_is_favorited."""
 
-        user = self.request.user
-        if value and not user.is_anonymous:
-            return queryset.filter(favorites__author=self.request.user)
-        return queryset
+        return Recipe.objects.filter(favorite__user=self.request.user)
 
     def shopping_cart_filter(self, queryset, name, value):
         """Функция обработки пременной get_is_in_shopping_cart."""
@@ -55,4 +51,4 @@ class RecipeFilter(filters.FilterSet):
         """Дополнительные параметры фильтра."""
 
         model = Recipe
-        fields = ['author']
+        fields = ('tags','author')
