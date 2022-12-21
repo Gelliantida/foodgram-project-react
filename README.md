@@ -104,9 +104,3 @@ scp nginx.conf <username>@<host>:/home/<username>/nginx.conf
     sudo docker-compose exec backend python manage.py createsuperuser
     ```
     - Проект будет доступен по вашему IP или доменному имени.
-
-## Проект доступен
-- Проект запущен и доступен по http://158.160.33.37/
-- Админ панель http://158.160.33.37//admin
-- Админ логин: admin
-- Админ пароль: admin
